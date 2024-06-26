@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Problems</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .problem {
+            margin-bottom: 20px;
+            font-size: 48px;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        .timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 36px;
+        }
+        input[type="text"] {
+            font-size: 48px;
+            width: 100px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multiplication Problems</h1>
+    <div id="timer" class="timer">10</div>
+    <div id="problem-container"></div>
+    <script>
+        let timer;
+
+        function startTimer() {
+            let timeLeft = 10;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = timeLeft;
+
+            timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    markIncorrectAndReload();
+                }
+            }, 1000);
+        }
+
+        function generateProblem() {
+            const num1 = Math.floor(Math.random() * 8) + 2; // Generates a number between 2 and 9
+            const num2 = Math.floor(Math.random() * 8) + 2; // Generates a number between 2 and 9
+            return { num1, num2, answer: num1 * num2 };
+        }
+
+        function createProblemElement(problem) {
+            const problemDiv = document.createElement('div');
+            problemDiv.classList.add('problem');
+            
+            const problemText = document.createElement('span');
+            problemText.textContent = `${problem.num1} x ${problem.num2} = `;
+            problemDiv.appendChild(problemText);
+            
+            const answerInput = document.createElement('input');
+            answerInput.type = 'text';
+            problemDiv.appendChild(answerInput);
+
+            answerInput.addEventListener('input', function() {
+                const inputValue = parseInt(this.value);
+                if (inputValue === problem.answer) {
+                    clearInterval(timer);
+                    problemText.classList.add('correct');
+                    answerInput.disabled = true;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else if (!isNaN(inputValue) && this.value.length >= problem.answer.toString().length) {
+                    clearInterval(timer);
+                    problemText.classList.add('incorrect');
+                    answerInput.disabled = true;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            });
+
+            return problemDiv;
+        }
+
+        function markIncorrectAndReload() {
+            const problemText = document.querySelector('.problem span');
+            problemText.classList.add('incorrect');
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+
+        function loadProblem() {
+            const problemContainer = document.getElementById('problem-container');
+            const problem = generateProblem();
+            const problemElement = createProblemElement(problem);
+            problemContainer.appendChild(problemElement);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProblem();
+            startTimer();
+        });
+    </script>
+</body>
+</html>
