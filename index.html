@@ -108,6 +108,9 @@
             const problem = generateProblem();
             const problemElement = createProblemElement(problem);
             problemContainer.appendChild(problemElement);
+            // Set focus to the input field after it has been added to the DOM
+            const answerInput = problemElement.querySelector('input[type="text"]');
+            answerInput.focus();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
